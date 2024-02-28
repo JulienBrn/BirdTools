@@ -1,0 +1,30 @@
+device:
+    index: 14
+    rate: 44100
+    nchannels: 32
+    selected_channels: [0, 1, 2, 3, 4, 5, 6, 7]
+
+record_boundaries:
+    buffer_size_seconds: 0.1
+    left_shoulder_seconds: 2
+    right_shoulder_seconds: 2
+    threshold: 200
+
+classification:
+    song_low_filter: 1000
+    song_high_filter: 5000
+    song_threshold_ratio: 0.2
+    min_song_duration_seconds: 0.2
+
+channel_specific_override:
+    2:
+        threshold: 150
+    5:
+        threshold: 50
+    7:
+        threshold: 75
+
+    
+display:
+    logging_level: "INFO"
+
