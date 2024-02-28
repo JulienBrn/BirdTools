@@ -14,8 +14,8 @@ beautifullogger.setup(displayLevel=logging.INFO)
 logging.getLogger("flox").setLevel(logging.WARNING)
 tqdm.tqdm.pandas(desc="Computing")
 
-folder = pathlib.Path("/home/julien/Documents/Recorder/BirdRecordings/Channel1/Song/2024-02-13/")
-pattern = "*.wav"
+folder = pathlib.Path("./testdata")
+pattern = "074051.*.wav"
 
 data = toolbox.read_folder_as_database(folder, [], pattern)
 if len(data.index) ==0:
@@ -30,13 +30,13 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from scipy.signal import spectrogram
 
-def compute_spectrogram(song, fs, NFFT=512):
+def compute_spectrogram(song: np.ndarray, fs, NFFT=512):
 
     fig, ax = plt.subplots(figsize=(10, 8))
 
     specgram_args = {
         "NFFT": NFFT,
-        "noverlap": NFFT * 0.90,
+        # "noverlap": NFFT * 0.90,
         "scale_by_freq": True,
         "mode": "psd",
         "pad_to": 915,
@@ -46,8 +46,9 @@ def compute_spectrogram(song, fs, NFFT=512):
         "scale": "dB",
         "detrend": "mean",
     }
-
-    spec, freq, t, im = plt.specgram(song.ravel(), Fs=fs, **specgram_args)
+    x = song.flatten()
+    print(x.shape)
+    spec, freq, t, im = plt.specgram(x, Fs=fs, **specgram_args)
     
     x_t = np.linspace(0, len(song), len(t))
 
@@ -65,9 +66,9 @@ def compute_spectrogram(song, fs, NFFT=512):
 
     # plt.close()
 
-    return
+    return np.nan
 
-#data["spectrogram"] = data.progress_apply(lambda row: compute_spectrogram(row["arr"], row["fs"]), axis=1, result_type="reduce")
+data["spectrogram"] = data.progress_apply(lambda row: compute_spectrogram(row["arr"], row["fs"]), axis=1, result_type="reduce")
 
 #data = data.groupby("path").apply(lambda grp: grp["spectrogram"].iat[0].to_dataframe(name="spectrogram")).reset_index()
 #data["print_path"] = data["path"].apply(lambda x:pathlib.Path(x).relative_to(folder))
@@ -76,4 +77,4 @@ def compute_spectrogram(song, fs, NFFT=512):
 # subplot_title="{channel}{print_path}"
 # map(sns.lineplot, )
 
-compute_spectrogram(song, fs, NFFT=512)
+# compute_spectrogram(song, fs, NFFT=512)
